@@ -1,5 +1,6 @@
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.action === "scrape") {
+  if (request.action === "scrape") {
+    requestIdleCallback(() => {
       const html = document.documentElement.outerHTML;
       const css = Array.from(document.styleSheets)
         .map(sheet => {
@@ -15,5 +16,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         .join('\n');
   
       sendResponse(html + '\n\n/* CSS */\n\n' + css);
-    }
-  });
+    });
+    return true; // Indicates that the response is sent asynchronously
+  }
+});
